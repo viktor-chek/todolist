@@ -1,0 +1,48 @@
+version: "3.9"
+
+services:
+  frontend:
+    image: sermalenk/skypro-front:lesson-34
+    restart: on-failure
+    depends_on:
+      - api
+    ports:
+      - 80:80
+  api:
+    build: .
+    restart: on-failure
+    env_file:
+      - .env
+    depends_on:
+      db:
+        condition: service_healthy
+      migrations:
+        condition: service_started
+    ports:
+      - 8000:8000
+  migrations:
+    build: .
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file:
+      - .env
+    command: python manage.py migrate
+  db:
+    image: postgres:14-alpine
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    restart: on-failure
+    env_file:
+      - .env
+    ports:
+      - 5432:5432
+    volumes:
+      - ./pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
