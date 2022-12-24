@@ -15,7 +15,7 @@ services:
       db:
         condition: service_healthy
       migrations:
-        condition: service_completed_successfully
+        condition: service_started
     env_file:
       - .env
   migrations:
