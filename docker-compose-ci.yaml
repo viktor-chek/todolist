@@ -18,6 +18,9 @@ services:
         condition: service_started
     env_file:
       - .env
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
   migrations:
     image: viktorchek/diplom:${GITHUB_REF_NAME}-${GITHUB_RUN_ID}
     depends_on:
