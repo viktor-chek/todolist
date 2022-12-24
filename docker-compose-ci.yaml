@@ -25,6 +25,8 @@ services:
         condition: service_healthy
     volumes:
       - ./.env:/todolist/.env
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
     command: python manage.py migrate
   db:
     image: postgres:14-alpine
