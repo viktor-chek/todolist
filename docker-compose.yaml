@@ -17,7 +17,7 @@ services:
       db:
         condition: service_healthy
       migrations:
-        condition: service_completed_successfully
+        condition: service_started
     ports:
       - 8000:8000
   migrations:
