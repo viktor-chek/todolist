@@ -16,8 +16,8 @@ services:
         condition: service_healthy
       migrations:
         condition: service_completed_successfully
-    volumes:
-      - ./.env:/todolist/.env
+    env_file:
+      - .env
   migrations:
     image: viktorchek/diplom:${GITHUB_REF_NAME}-${GITHUB_RUN_ID}
     depends_on:
@@ -33,6 +33,8 @@ services:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: ${DB_NAME}
     restart: on-failure
+    ports:
+      - 5432:5432
     volumes:
       - ./pg_data:/var/lib/postgresql/data
     healthcheck:
