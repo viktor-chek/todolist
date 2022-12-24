@@ -2,7 +2,7 @@ version: "3.9"
 
 services:
   frontend:
-    image: sermalenk/skypro-front:lesson-34
+    image: sermalenk/skypro-front:lesson-35
     restart: on-failure
     depends_on:
       - api
@@ -15,13 +15,9 @@ services:
       db:
         condition: service_healthy
       migrations:
-        condition: service_started
+        condition: service_completed_successfully
     env_file:
       - .env
-    volumes:
-      - ./.env:/todolist/.env
-    ports:
-      - 8000:8000
   migrations:
     image: viktorchek/diplom:${GITHUB_REF_NAME}-${GITHUB_RUN_ID}
     depends_on:
@@ -37,8 +33,6 @@ services:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: ${DB_NAME}
     restart: on-failure
-    ports:
-      - 5432:5432
     volumes:
       - ./pg_data:/var/lib/postgresql/data
     healthcheck:
