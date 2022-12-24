@@ -30,8 +30,9 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    env_file:
+      - .env
     volumes:
-      - ./.env:/todolist/.env
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
     command: python manage.py migrate
