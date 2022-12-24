@@ -16,8 +16,8 @@ services:
         condition: service_healthy
       migrations:
         condition: service_completed_successfully
-    env_file:
-      - .env
+    volumes:
+      - ./.env:/todolist/.env
   migrations:
     image: viktorchek/diplom:${GITHUB_REF_NAME}-${GITHUB_RUN_ID}
     depends_on:
