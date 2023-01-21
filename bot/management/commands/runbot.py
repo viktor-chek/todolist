@@ -26,6 +26,8 @@ class Command(BaseCommand):
                 self.handle_message(message=item.message)
 
     def handle_message(self, message: Message):
+        if not message:
+            return
         tg_user, created = TgUser.objects.get_or_create(tg_chat_id=message.from_.id, tg_username=message.from_.username)
 
         if created:
