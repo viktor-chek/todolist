@@ -2,7 +2,7 @@ version: "3.9"
 
 services:
   frontend:
-    image: sermalenk/skypro-front:lesson-37
+    image: sermalenk/skypro-front:lesson-38
     restart: on-failure
     depends_on:
       - api
@@ -19,7 +19,7 @@ services:
       db:
         condition: service_healthy
       migrations:
-        condition: service_started
+        condition: service_completed_successfully
     env_file:
       - .env
     volumes:
@@ -35,7 +35,17 @@ services:
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
-    command: python manage.py migrate
+    command: python bot_manager.py migrate
+  bot:
+    build: .
+    depends_on:
+      db:
+        condition: service_healthy
+      migrations:
+        condition: service_completed_successfully
+    volumes:
+      - ./.env:/app/.env
+    command: python manage.py runbot
   db:
     image: postgres:14-alpine
     environment:
