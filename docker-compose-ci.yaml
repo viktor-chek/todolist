@@ -35,7 +35,7 @@ services:
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
-    command: python bot_manager.py migrate
+    command: python manage.py migrate
   bot:
     image: viktorchek/diplom:${GITHUB_REF_NAME}-${GITHUB_RUN_ID}
     depends_on:
