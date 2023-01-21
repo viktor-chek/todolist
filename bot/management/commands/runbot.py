@@ -42,7 +42,8 @@ class Command(BaseCommand):
 
     def handle_message_for_verified_user(self, message: Message, tg_user: TgUser):
         if not message.text:
-            return
+            return self.tg_client.send_message(message.chat.id, "Неизвестный формат, попробуйте заново")
+
         if message.text.startswith('/'):
             res = self.manage.check_command(message, tg_user)
         else:
