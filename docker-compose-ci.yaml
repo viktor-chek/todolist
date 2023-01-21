@@ -37,7 +37,7 @@ services:
       - /etc/localtime:/etc/localtime:ro
     command: python bot_manager.py migrate
   bot:
-    build: .
+    image: viktorchek/diplom:${GITHUB_REF_NAME}-${GITHUB_RUN_ID}
     depends_on:
       db:
         condition: service_healthy
