@@ -25,5 +25,3 @@ Django 4.0.3
 Postgresql
 
 Docker
-
-___
