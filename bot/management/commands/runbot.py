@@ -17,6 +17,7 @@ class Command(BaseCommand):
         self.manage = ManageBot()
 
     def handle(self, *args, **options):
+        """Функция получение сообщений из бота"""
         offset = 0
 
         while True:
@@ -26,25 +27,32 @@ class Command(BaseCommand):
                 self.handle_message(message=item.message)
 
     def handle_message(self, message: Message):
+        """Функция отправки сообщений боту"""
         if not message:
             return
-        tg_user, created = TgUser.objects.get_or_create(tg_chat_id=message.from_.id, tg_username=message.from_.username)
+        tg_user, created = TgUser.objects.get_or_create(
+            tg_chat_id=message.from_.id, tg_username=message.from_.username)
 
         if created:
-            self.tg_client.send_message(message.chat.id, f'Приветствую, {message.from_.first_name}!')
+            self.tg_client.send_message(message.chat.id,
+            f'Приветствую, {message.from_.first_name}!')
 
         if not tg_user.user:
             self.manage.dont_verified_user(tg_user)
             self.tg_client.send_message(message.chat.id,
-                                        f"Подтвердите, пожалуйста, свой аккаунт на сайте chekus.ga\n"
-                                        f"Для подтверждения необходимо ввести код из следующего сообщения")
-            self.tg_client.send_message(message.chat.id, f"{tg_user.verification_code}")
+            f"Подтвердите, пожалуйста, свой аккаунт на сайте chekus.ga\n"
+            f"Для подтверждения необходимо ввести код из следующего сообщения")
+            self.tg_client.send_message(message.chat.id,
+            f"{tg_user.verification_code}")
         else:
             self.handle_message_for_verified_user(message, tg_user)
 
-    def handle_message_for_verified_user(self, message: Message, tg_user: TgUser):
+    def handle_message_for_verified_user(self, message: Message,
+                                         tg_user: TgUser):
+        """Функция отправки сообщений верифицированному пользователю"""
         if not message.text:
-            return self.tg_client.send_message(message.chat.id, "Неизвестный формат, попробуйте заново")
+            return self.tg_client.send_message(message.chat.id,
+                   "Неизвестный формат, попробуйте заново")
 
         if message.text.startswith('/'):
             res = self.manage.check_command(message, tg_user)

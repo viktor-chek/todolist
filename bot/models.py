@@ -5,10 +5,14 @@ from core.models import User
 
 
 class TgUser(models.Model):
-    tg_chat_id = models.BigIntegerField(verbose_name="telegram chat id", unique=True)
-    user = models.ForeignKey(User, verbose_name="Пользователь", on_delete=models.PROTECT, null=True, blank=True,
+    """Модель пользователя телеграм"""
+    tg_chat_id = models.BigIntegerField(verbose_name="telegram chat id",
+                                        unique=True)
+    user = models.ForeignKey(User, verbose_name="Пользователь",
+                             on_delete=models.PROTECT, null=True, blank=True,
                              default=None)
-    tg_username = models.CharField(max_length=32, verbose_name="tg username", null=True, blank=True, default=None)
+    tg_username = models.CharField(max_length=32, verbose_name="tg username",
+                                   null=True, blank=True, default=None)
     verification_code = models.CharField(max_length=12)
 
     class Meta:
@@ -16,6 +20,7 @@ class TgUser(models.Model):
         verbose_name_plural = "Telegram пользователи"
 
     def set_verification_code(self) -> str:
+        """Генерация верификационного кода для привязки аккаунта в телеграм боте"""
         code = get_random_string(12)
         self.verification_code = code
         self.save()

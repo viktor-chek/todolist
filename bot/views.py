@@ -9,6 +9,7 @@ from bot.tg.client import TgClient
 
 
 class VerificationView(GenericAPIView):
+    """Представление верификации бота"""
     model = TgUser
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = TgUserSerializer

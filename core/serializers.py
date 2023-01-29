@@ -1,15 +1,18 @@
-from django import forms
 from rest_framework import serializers
 from rest_framework import exceptions
 
-from django.contrib.auth import get_user_model, password_validation, authenticate
+from django.contrib.auth import get_user_model
+from django.contrib.auth import password_validation
+from django.contrib.auth import authenticate
+
 from django.contrib.auth.hashers import make_password
 
 USER_MODEL = get_user_model()
 
 
 class RegistrationSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(write_only=True, validators=[password_validation.validate_password])
+    password = serializers.CharField(write_only=True, validators=[
+        password_validation.validate_password])
     password_repeat = serializers.CharField(write_only=True)
 
     def create(self, validated_data) -> USER_MODEL:
@@ -26,7 +29,9 @@ class RegistrationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = USER_MODEL
-        fields = ("id", "username", "first_name", "last_name", "email", "password", "password_repeat",)
+        fields = (
+        "id", "username", "first_name", "last_name", "email", "password",
+        "password_repeat",)
 
 
 class LoginSerializer(serializers.ModelSerializer):
@@ -35,7 +40,7 @@ class LoginSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = USER_MODEL
-        fields = ('username', 'password', )
+        fields = ('username', 'password',)
 
     def create(self, validated_data):
         user = authenticate(username=validated_data['username'],
@@ -47,10 +52,9 @@ class LoginSerializer(serializers.ModelSerializer):
 
 
 class ProfileSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = USER_MODEL
-        fields = ('id', 'username', 'first_name', 'last_name', 'email', )
+        fields = ('id', 'username', 'first_name', 'last_name', 'email',)
 
 
 class UpdatePasswordSerializer(serializers.Serializer):
@@ -61,7 +65,8 @@ class UpdatePasswordSerializer(serializers.Serializer):
     def validate(self, data):
         user = data['user']
         if not user.check_password(data['old_password']):
-            raise serializers.ValidationError({'old_password': 'incorrect password'})
+            raise serializers.ValidationError(
+                {'old_password': 'incorrect password'})
         return data
 
     def update(self, instance, validated_data):

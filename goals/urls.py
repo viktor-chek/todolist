@@ -2,7 +2,6 @@ from django.urls import path
 
 from goals import views
 
-
 urlpatterns = [
     path("board/create", views.BoardCreateView.as_view()),
     path("board/list", views.BoardListView.as_view()),

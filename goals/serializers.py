@@ -3,7 +3,11 @@ from rest_framework import serializers
 
 from core.models import User
 from core.serializers import ProfileSerializer
-from goals.models import GoalCategory, Goal, GoalComment, BoardParticipant, Board
+from goals.models import GoalCategory
+from goals.models import Goal
+from goals.models import GoalComment
+from goals.models import Board
+from goals.models import BoardParticipant
 
 
 class BoardParticipantSerializer(serializers.ModelSerializer):
@@ -47,7 +51,8 @@ class BoardSerializer(serializers.ModelSerializer):
         read_only_fields = ("id", "created", "updated")
 
     def update(self, instance, validated_data):
-        owner = validated_data.pop("user")
+        print(validated_data)
+        owner = validated_data.pop("user", self.context["request"].user)
         new_participants = validated_data.pop("participants")
         new_by_id = {part["user"].id: part for part in new_participants}
 
@@ -58,8 +63,8 @@ class BoardSerializer(serializers.ModelSerializer):
                     old_participant.delete()
                     continue
                 if (
-                    old_participant.role
-                    != new_by_id[old_participant.user_id]["role"]
+                        old_participant.role
+                        != new_by_id[old_participant.user_id]["role"]
                 ):
                     old_participant.role = new_by_id[old_participant.user_id][
                         "role"
@@ -120,7 +125,8 @@ class GoalCategorySerializer(serializers.ModelSerializer):
 
 
 class GoalCreateSerializer(serializers.ModelSerializer):
-    category = serializers.PrimaryKeyRelatedField(queryset=GoalCategory.objects.all())
+    category = serializers.PrimaryKeyRelatedField(
+        queryset=GoalCategory.objects.all())
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
 
     class Meta:
@@ -135,12 +141,12 @@ class GoalCreateSerializer(serializers.ModelSerializer):
             )
 
         if not BoardParticipant.objects.filter(
-            board_id=value.board.id,
-            role__in=[
-                BoardParticipant.Role.owner,
-                BoardParticipant.Role.writer,
-            ],
-            user=self.context["request"].user,
+                board_id=value.board.id,
+                role__in=[
+                    BoardParticipant.Role.owner,
+                    BoardParticipant.Role.writer,
+                ],
+                user=self.context["request"].user,
         ).exists():
             raise serializers.ValidationError(
                 "У вас недостаточно прав, чтобы создать цель на данной доске"

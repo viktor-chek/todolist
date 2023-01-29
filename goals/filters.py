@@ -1,5 +1,6 @@
 from django.db import models
-from django_filters import IsoDateTimeFilter, FilterSet
+from django_filters import IsoDateTimeFilter
+from django_filters import FilterSet
 
 from goals.models import Goal
 

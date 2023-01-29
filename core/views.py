@@ -1,19 +1,27 @@
 from django.contrib.auth import get_user_model, login, logout
 from rest_framework import permissions, status
-from rest_framework.generics import CreateAPIView, GenericAPIView, RetrieveUpdateDestroyAPIView, UpdateAPIView
+from rest_framework.generics import CreateAPIView
+from rest_framework.generics import GenericAPIView
+from rest_framework.generics import RetrieveUpdateDestroyAPIView
+from rest_framework.generics import UpdateAPIView
 from rest_framework.response import Response
 
-from core.serializers import RegistrationSerializer, LoginSerializer, ProfileSerializer, UpdatePasswordSerializer
+from core.serializers import RegistrationSerializer
+from core.serializers import LoginSerializer
+from core.serializers import ProfileSerializer
+from core.serializers import UpdatePasswordSerializer
 
 USER_MODEL = get_user_model()
 
 
 class RegistrationView(CreateAPIView):
+    """Представления страницы регистрации"""
     model = USER_MODEL
     serializer_class = RegistrationSerializer
 
 
 class LoginView(GenericAPIView):
+    """Представления страницы авторизации"""
     serializer_class = LoginSerializer
 
     def post(self, request, *args, **kwargs):
@@ -25,6 +33,7 @@ class LoginView(GenericAPIView):
 
 
 class ProfileView(RetrieveUpdateDestroyAPIView):
+    """Представления страницы профиля"""
     serializer_class = ProfileSerializer
     queryset = USER_MODEL.objects.all()
 
@@ -39,6 +48,7 @@ class ProfileView(RetrieveUpdateDestroyAPIView):
 
 
 class UpdatePasswordView(UpdateAPIView):
+    """Представления страницы обновления пароля пользователя"""
     serializer_class = UpdatePasswordSerializer
     permission_classes = [permissions.IsAuthenticated]
 
